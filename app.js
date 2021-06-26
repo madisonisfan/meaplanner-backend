@@ -6,12 +6,14 @@ var logger = require("morgan");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+const recipeRouter = require("./routes/recipeRouter");
+const postRouter = require("./routes/postRouter");
 
 var app = express();
 
 const mongoose = require("mongoose");
-const recipeRouter = require("./routes/recipeRouter");
-const url = "mongodb://localhost:27017/meaplanner";
+
+const url = "mongodb://localhost:27017/mealplanner";
 
 const connect = mongoose.connect(url, {
   useCreateIndex: true,
@@ -38,6 +40,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/recipes", recipeRouter);
+app.use("/posts", postRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
