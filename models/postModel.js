@@ -1,6 +1,22 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const commentSchema = new Schema(
+  {
+    commentContent: {
+      type: String,
+      required: true,
+    },
+    commentCreator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const postSchema = new Schema(
   {
     postContent: {
@@ -12,9 +28,10 @@ const postSchema = new Schema(
       required: true,
     },
     postCreator: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
+    comments: [commentSchema],
   },
   {
     timestamps: true,

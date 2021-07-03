@@ -1,6 +1,7 @@
 const express = require("express");
 const recipeRouter = express.Router();
 const Recipe = require("../models/recipeModel");
+const authenticate = require("../authenticate");
 
 recipeRouter
   .route("/")
@@ -13,7 +14,7 @@ recipeRouter
       })
       .catch((err) => next(err));
   })
-  .post((req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     Recipe.create(req.body)
       .then((recipe) => {
         console.log("Recipe added: ", recipe);
@@ -23,12 +24,12 @@ recipeRouter
       })
       .catch((err) => next(err));
   })
-  .put((req, res) => {
+  .put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.setHeader("Content-Type", "text/plain");
     res.end("PUT operation not support on /recipes");
   })
-  .delete((req, res, next) => {
+  .delete(authenticate.verifyUser, (req, res, next) => {
     Recipe.deleteMany()
       .then((response) => {
         res.statusCode = 200;
@@ -49,12 +50,13 @@ recipeRouter
       })
       .catch((err) => next(err));
   })
-  .post((req, res) => {
+  .post(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.setHeader("Content-Type", "text/plain");
     res.end(`POST operation not support on /recipes/${req.params.recipeId}`);
   })
-  .put((req, res) => {
+
+  .put(authenticate.verifyUser, (req, res, next) => {
     Recipe.findByIdAndUpdate(
       req.params.recipeId,
       {
@@ -69,15 +71,19 @@ recipeRouter
       })
       .catch((err) => next(err));
   })
-  .delete((req, res, next) => {
-    Recipe.findByIdAndDelete(req.params.recipeId)
-      .then((response) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "text/plain");
-        res.json(response);
-      })
-      .catch((err) => next(err));
-  });
+  .delete(
+    authenticate.verifyUser,
+
+    (req, res, next) => {
+      Recipe.findByIdAndDelete(req.params.recipeId)
+        .then((response) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(response);
+        })
+        .catch((err) => next(err));
+    }
+  );
 
 module.exports = recipeRouter;
 
