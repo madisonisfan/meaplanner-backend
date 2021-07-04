@@ -31,57 +31,19 @@ postRouter
     res.setHeader("Content-Type", "text/plain");
     res.end("PUT operation not support on /posts");
   })
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    Post.deleteMany()
-      .then((response) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "text/plain");
-        res.json(response);
-      })
-      .catch((err) => next(err));
-  });
-
-postRouter
-  .route("/:postId")
-  .get((req, res, next) => {
-    Post.findById(req.params.postId)
-      .populate("postCreator")
-      .then((post) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(post);
-      })
-      .catch((err) => next(err));
-  })
-  .post(authenticate.verifyUser, (req, res) => {
-    res.statusCode = 403;
-    res.setHeader("Content-Type", "text/plain");
-    res.end(`POST operation not support on /posts/${req.params.postId}`);
-  })
-  .put(authenticate.verifyUser, (req, res, next) => {
-    Post.findByIdAndUpdate(
-      req.params.postId,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    )
-      .then((post) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(post);
-      })
-      .catch((err) => next(err));
-  })
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    Post.findByIdAndDelete(req.params.postId)
-      .then((response) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(response);
-      })
-      .catch((err) => next(err));
-  });
+  .delete(
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res, next) => {
+      Post.deleteMany()
+        .then((response) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "text/plain");
+          res.json(response);
+        })
+        .catch((err) => next(err));
+    }
+  );
 
 postRouter
   .route("/:postId")
@@ -100,29 +62,84 @@ postRouter
     res.end(`POST operation not support on /posts/${req.params.postId}`);
   })
   .put(authenticate.verifyUser, (req, res, next) => {
-    Post.findByIdAndUpdate(
-      req.params.postId,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    )
+    Post.findById(req.params.postId)
       .then((post) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(post);
+        if (post) {
+          if (post.postCreator._id.equals(req.user._id)) {
+            if (req.body.postContent) {
+              post.postContent = req.body.postContent;
+            }
+            if (req.body.postType) {
+              post.postType = req.body.postType;
+            }
+
+            post
+              .save()
+              .then((post) => {
+                res.statusCode = 200;
+                res.setHeader("Conten-Type", "application/json");
+                res.json(post);
+              })
+              .catch((err) => next(err));
+          } else {
+            const err = new Error("You are not the post creator");
+            err.status = 404;
+            return next(err);
+          }
+        } else {
+          const err = new Error(`Post ${req.params.postId} not found`);
+          err.status = 404;
+          return next(err);
+        }
       })
       .catch((err) => next(err));
   })
   .delete(authenticate.verifyUser, (req, res, next) => {
-    Post.findByIdAndDelete(req.params.recipeId)
-      .then((response) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(response);
+    Post.findById(req.params.postId)
+      .then((post) => {
+        if (post) {
+          if (post.postCreator._id.equals(req.user._id)) {
+            Post.findByIdAndDelete(req.params.postId)
+              .then((response) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(response);
+              })
+              .catch((err) => next(err));
+          } else {
+            const err = new Error(`You are not the post creator`);
+            err.status = 404;
+            return next(err);
+          }
+        } else {
+          const err = new Error(`Post ${req.params.postId} not found`);
+          err.status = 404;
+          return next(err);
+        }
       })
       .catch((err) => next(err));
   });
+
+/*
+  Post.findById(req.params.postId)
+      .then((post) => {
+        if (post) {
+          if (post.postCreator._id.equals(req.user._id)) {
+            post.remove();
+          } else {
+            const err = new Error(`You are not the post creator`);
+            err.status = 404;
+            return next(err);
+          }
+        } else {
+          const err = new Error(`Post ${req.params.postId} not found`);
+          err.status = 404;
+          return next(err);
+        }
+      })
+      .catch((err) => next(err));
+
+  */
 
 postRouter
   .route("/:postId/comments")
@@ -170,29 +187,33 @@ postRouter
       `PUT operation not supported on /posts/${req.params.postId}/comments`
     );
   })
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    Post.findById(req.params.postId)
-      .then((post) => {
-        if (post) {
-          for (let i = post.comments.length - 1; i >= 0; i--) {
-            post.comments.id(post.comments[i]._id).remove();
+  .delete(
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res, next) => {
+      Post.findById(req.params.postId)
+        .then((post) => {
+          if (post) {
+            for (let i = post.comments.length - 1; i >= 0; i--) {
+              post.comments.id(post.comments[i]._id).remove();
+            }
+            post
+              .save()
+              .then((post) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(post);
+              })
+              .catch((err) => next(err));
+          } else {
+            err = new Error(`Post ${req.params.postId} not found`);
+            err.status = 404;
+            return next(err);
           }
-          post
-            .save()
-            .then((post) => {
-              res.statusCode = 200;
-              res.setHeader("Content-Type", "application/json");
-              res.json(post);
-            })
-            .catch((err) => next(err));
-        } else {
-          err = new Error(`Post ${req.params.postId} not found`);
-          err.status = 404;
-          return next(err);
-        }
-      })
-      .catch((err) => next(err));
-  });
+        })
+        .catch((err) => next(err));
+    }
+  );
 
 postRouter
   .route("/:postId/comments/:commentId")

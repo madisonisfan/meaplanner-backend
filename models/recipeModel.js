@@ -40,6 +40,10 @@ const recipeSchema = new Schema(
       type: String,
       required: true,
     },
+    recipeCreator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,
