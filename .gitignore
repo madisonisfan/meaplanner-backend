@@ -1,2 +1,4 @@
 .history
 node_modules
+bin/sever.cert
+bin/server.key

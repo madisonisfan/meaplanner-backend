@@ -2,11 +2,12 @@ const express = require("express");
 const recipeRouter = express.Router();
 const Recipe = require("../models/recipeModel");
 const authenticate = require("../authenticate");
-const Post = require("../models/postModel");
+const cors = require("./cors");
 
 recipeRouter
   .route("/")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (req, res, next) => {
     Recipe.find()
       .then((recipes) => {
         res.statusCode = 200;
@@ -15,7 +16,7 @@ recipeRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     req.body.recipeCreator = req.user._id;
     Recipe.create(req.body)
       .then((recipe) => {
@@ -26,12 +27,13 @@ recipeRouter
       })
       .catch((err) => next(err));
   })
-  .put(authenticate.verifyUser, (req, res) => {
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.setHeader("Content-Type", "text/plain");
     res.end("PUT operation not support on /recipes");
   })
   .delete(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
@@ -47,7 +49,8 @@ recipeRouter
 
 recipeRouter
   .route("/:recipeId")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (req, res, next) => {
     Recipe.findById(req.params.recipeId)
       .then((recipe) => {
         res.statusCode = 200;
@@ -56,13 +59,13 @@ recipeRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, (req, res) => {
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.setHeader("Content-Type", "text/plain");
     res.end(`POST operation not support on /recipes/${req.params.recipeId}`);
   })
 
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Recipe.findById(req.params.recipeId)
       .then((recipe) => {
         if (recipe) {
@@ -116,7 +119,7 @@ recipeRouter
       .catch((err) => next(err));
   })
 
-  .delete(authenticate.verifyUser, (req, res, next) => {
+  .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Recipe.findById(req.params.recipeId)
       .then((recipe) => {
         if (recipe) {
