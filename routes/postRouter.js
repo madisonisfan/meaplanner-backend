@@ -2,10 +2,12 @@ const express = require("express");
 const postRouter = express.Router();
 const Post = require("../models/postModel");
 const authenticate = require("../authenticate");
+const cors = require("./cors");
 
 postRouter
   .route("/")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (req, res, next) => {
     Post.find()
       .populate("postCreator")
       .then((posts) => {
@@ -15,7 +17,7 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     req.body.postCreator = req.user._id;
     Post.create(req.body)
       .then((post) => {
@@ -26,12 +28,13 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .put(authenticate.verifyUser, (req, res) => {
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.setHeader("Content-Type", "text/plain");
     res.end("PUT operation not support on /posts");
   })
   .delete(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
@@ -47,7 +50,8 @@ postRouter
 
 postRouter
   .route("/:postId")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (req, res, next) => {
     Post.findById(req.params.postId)
       .then((post) => {
         res.statusCode = 200;
@@ -56,12 +60,12 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, (req, res) => {
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.setHeader("Content-Type", "text/plain");
     res.end(`POST operation not support on /posts/${req.params.postId}`);
   })
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Post.findById(req.params.postId)
       .then((post) => {
         if (post) {
@@ -94,7 +98,7 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .delete(authenticate.verifyUser, (req, res, next) => {
+  .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Post.findById(req.params.postId)
       .then((post) => {
         if (post) {
@@ -143,7 +147,8 @@ postRouter
 
 postRouter
   .route("/:postId/comments")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (req, res, next) => {
     Post.findById(req.params.postId)
       .populate("comments.commentCreator")
       .then((post) => {
@@ -159,7 +164,7 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Post.findById(req.params.postId)
       .then((post) => {
         if (post) {
@@ -181,13 +186,14 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .put(authenticate.verifyUser, (req, res) => {
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end(
       `PUT operation not supported on /posts/${req.params.postId}/comments`
     );
   })
   .delete(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
@@ -217,7 +223,8 @@ postRouter
 
 postRouter
   .route("/:postId/comments/:commentId")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (req, res, next) => {
     Post.findById(req.params.postId)
       .populate("comments.commentCreator")
       .then((post) => {
@@ -238,13 +245,13 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, (req, res) => {
+  .post(cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end(
       `POST operation not supported on /posts/${req.params.postId}/comments/${req.params.commentId}`
     );
   })
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Post.findById(req.params.postId)
       .then((post) => {
         const comment = post.comments.id(req.params.commentId);
@@ -279,7 +286,7 @@ postRouter
       })
       .catch((err) => next(err));
   })
-  .delete(authenticate.verifyUser, (req, res, next) => {
+  .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Post.findById(req.params.postId)
       .then((post) => {
         const comment = post.comments.id(req.params.commentId);
@@ -315,4 +322,5 @@ postRouter
       })
       .catch((err) => next(err));
   });
+
 module.exports = postRouter;
