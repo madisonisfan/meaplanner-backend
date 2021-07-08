@@ -2,6 +2,7 @@ const express = require("express");
 const authenticate = require("../authenticate");
 const multer = require("multer");
 const cors = require("./cors");
+const Recipe = require("../models/recipeModel");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -53,6 +54,64 @@ uploadRouter
     (req, res) => {
       res.statusCode = 403;
       res.end("PUT operation not supported on /imageUpload");
+    }
+  )
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res) => {
+      res.statusCode = 403;
+      res.end("DELETE operation not supported on /imageUpload");
+    }
+  );
+
+uploadRouter
+  .route("/:recipeId")
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res) => {
+      res.statusCode = 403;
+      res.end("DELETE operation not supported on /imageUpload");
+    }
+  )
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res) => {
+      res.statusCode = 403;
+      res.end("DELETE operation not supported on /imageUpload");
+    }
+  )
+  .put(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    upload.single("imageFile"),
+    (req, res, next) => {
+      console.log(req.file.filename);
+      Recipe.findById(req.params.recipeId)
+        .then((recipe) => {
+          if (recipe) {
+            recipe.imageUrl = `images/${req.file.filename}`;
+            recipe
+              .save()
+              .then((recipe) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(recipe);
+              })
+              .catch((err) => next(err));
+          } else {
+            const err = new Error(`Recipe ${req.params.recipeId} not found`);
+            err.status = 404;
+            return next(err);
+          }
+        })
+        .catch((err) => next(err));
     }
   )
   .delete(

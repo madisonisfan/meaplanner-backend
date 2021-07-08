@@ -11,6 +11,7 @@ var usersRouter = require("./routes/users");
 const recipeRouter = require("./routes/recipeRouter");
 const postRouter = require("./routes/postRouter");
 const uploadRouter = require("./routes/uploadRouter");
+const favoriteRouter = require("./routes/favoriteRouter");
 
 var app = express();
 
@@ -48,6 +49,7 @@ app.use("/users", usersRouter);
 app.use("/recipes", recipeRouter);
 app.use("/posts", postRouter);
 app.use("/imageUpload", uploadRouter);
+app.use("/favorite", favoriteRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

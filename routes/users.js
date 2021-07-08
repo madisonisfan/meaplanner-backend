@@ -3,7 +3,7 @@ const userRouter = express.Router();
 const User = require("../models/userModel");
 const passport = require("passport");
 const authenticate = require("../authenticate");
-
+const cors = require("./cors");
 /* GET users listing. */
 userRouter.get("/", cors.corsWithOptions, (req, res, next) => {
   res.send("respond with a resource");
@@ -71,7 +71,7 @@ userRouter.get("/logout", cors.corsWithOptions, (req, res, next) => {
   }
 });
 
-UserRouter.get(
+userRouter.get(
   "/facebook/token",
   passport.authenticate("facebook-token"),
   (req, res) => {
