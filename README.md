@@ -35,7 +35,7 @@ It has not been updated since 2021, so there might be a few bugs.
 Why are there so many repositories: 
 - The bootcamp was separated into 4 courses. The 2nd was React, and the last was Backend. 
 - In the React course, I created a Meal Planner React app that is not integrated with a server. 
-- In the backend course, I created this Meal Planner server that is not integrated with a React app
+- In the backend course, I created this Meal Planner server that is not integrated with a React app (this file)
 - As an extra, we were taught to integrate a React app with a server. But to do so, we created separate projects which were copies of our react app and server, but with a few new additions.
 ## Links to Similar Repositories
 - [View Meal Planner React web app not integrated with this server](https://github.com/madisonisfan/mealplanner-react)
