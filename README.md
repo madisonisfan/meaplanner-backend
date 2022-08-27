@@ -5,9 +5,10 @@ In 2020 I particapted in Nucamp's Full-Stack Bootcamp. In the second course, we 
 This server was created as the backend of my MealPlanner React application. At the end of the course, I connected the Meal Planner React web app to the Mealplanner server. 
 
 # Table Of Contents
-- [Project Confusion](#project-confusion)
 - [Data Stored ](#data-stored)
 - [Technologies](#technologies)
+- [Project Confusion](#project-confusion)
+
 
 <!-- - [Available Scripts](#available-scripts) --> 
 
