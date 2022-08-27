@@ -11,10 +11,10 @@ This server was created as the backend of my MealPlanner React application. At t
 - [Available Scripts](#available-scripts)
 
 ## Data Stored
-- users: users username and password are stored
-- recipes: all recipes added by myself (admin) and other users are stored. 
-- posts: all posts added by myself (admin) and other users are stored.
-- favorites: recipes favorited by the user signed in are stored
+- users: Because users can log in with Facebook, their first name, last name, and Facebook id are stored. 
+- recipes: all recipes added by myself (admin) and other users are stored, including data such as recipe name, ingredients, instructions, cook time, prep time, calories, servings, creation date, creator, and an image URL 
+- posts: All posts added by myself (admin) and other users are stored, including data such as post content, post type (ex: a question), creator, and creation date
+- comments: All comments made on posts are stored, including data such as the comment content, date, creator, and id of the post the comment was made on
 <! --  All users can edit (put), add(post), and delete, their own recipes. The admin can apply edit, add, delete any recipes they want. -->
 
 ## Technologies 
@@ -32,7 +32,7 @@ It has not been updated since 2021, so there might be a few bugs.
 - JSON Web Token 
 
 ## Project Confusion
-Why are there so many repositories?: 
+Why are there so many repositories: 
 - The bootcamp was separated into 4 courses. The 2nd was React, and the last was Backend. 
 - In the React course, I created a Meal Planner React app that is not integrated with a server. 
 - In the backend course, I created this Meal Planner server that is not integrated with a React app
@@ -41,4 +41,6 @@ Why are there so many repositories?:
 - [View Meal Planner React web app not integrated with this server](https://github.com/madisonisfan/mealplanner-react)
 - [View Meal Planner React web app edited to be integrated with Meal Planner server](https://github.com/madisonisfan/meaplanner-react-integration)
 - [View Meal Planner server edited to be integrated with Meal Planner web app](https://github.com/madisonisfan/meaplanner-server-integration)
+
+
 
