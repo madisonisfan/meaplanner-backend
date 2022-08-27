@@ -38,7 +38,7 @@ Why are there so many repositories?:
 - In the backend course, I created this Meal Planner server that is not integrated with a React app
 - As an extra, we were taught to integrate a React app with a server. But to do so, we created separate projects which were copies of our react app and server, but with a few new additions.
 ## Links to Similar Repositories
-- [View Meal Planner React app not integrated with this server]([https://github.com/madisonisfan/meaplanner-node-express-mongodb](https://github.com/madisonisfan/mealplanner-react))
+- [View Meal Planner React app not integrated with this server](https://github.com/madisonisfan/mealplanner-react)
 - [View Meal Planner app edited to be integrated with Meal Planner server](https://github.com/madisonisfan/meaplanner-react-integration)
-- [View Meal Planner server edited to be integrated with Meal Planner web app](https://github.com/madisonisfan/meaplanner-server-integration)##
+- [View Meal Planner server edited to be integrated with Meal Planner web app](https://github.com/madisonisfan/meaplanner-server-integration)
 
