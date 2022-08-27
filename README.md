@@ -8,7 +8,8 @@ This server was created as the backend of my MealPlanner React application. At t
 - [Project Confusion](#project-confusion)
 - [Data Stored ](#data-stored)
 - [Technologies](#technologies)
-- [Available Scripts](#available-scripts)
+
+<!-- - [Available Scripts](#available-scripts) --> 
 
 ## Data Stored
 - users: Because users can log in with Facebook, their first name, last name, and Facebook id are stored. 
