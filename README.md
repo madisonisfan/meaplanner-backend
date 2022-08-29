@@ -7,6 +7,7 @@ This server was created as the backend of my MealPlanner React application. At t
 # Table Of Contents
 - [Data Stored ](#data-stored)
 - [Technologies](#technologies)
+- [Installation and Usage](#installation-and-usage)
 - [Project Confusion](#project-confusion)
 
 
@@ -33,6 +34,15 @@ It has not been updated since 2021, so there might be a few bugs.
 - Multer 
 - JSON Web Token 
 
+
+
+## Installation and Usage
+In the project directory, you can run:
+
+Install dependencies: `yarn install` or `npm install`
+
+To run: `yarn start` or `npm start`
+
 ## Project Confusion
 Why are there so many repositories: 
 - The bootcamp was separated into 4 courses. The 2nd was React, and the last was Backend. 
@@ -43,6 +53,8 @@ Why are there so many repositories:
 - [View Meal Planner React web app not integrated with this server](https://github.com/madisonisfan/mealplanner-react)
 - [View Meal Planner React web app edited to be integrated with Meal Planner server](https://github.com/madisonisfan/meaplanner-react-integration)
 - [View Meal Planner server edited to be integrated with Meal Planner web app](https://github.com/madisonisfan/meaplanner-server-integration)
+
+
 
 
 
